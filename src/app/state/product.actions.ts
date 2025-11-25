@@ -4,24 +4,24 @@
 // A ação string pode ser chamada em reducers, effects ou stores para reagir a essa ação.
 // Payload é um objeto que carrega dados adicionais necessários para a ação.
 
-// LoadProducts: carregar a lista de produtos
+// Carrega a lista de produtos
 export class LoadProducts {
   static readonly type = '[Product] Load Products';
 }
 
-// AddProduct: adicionar um novo produto
+// Add um novo produto
 export class AddProduct {
 static readonly type = '[Product] Add Product';
 constructor(public payload: { name: string }) {}
 }
 
-// DeleteProduct: remover um produto existente
+// Remove um produto existente
 export class DeleteProduct {
 static readonly type = '[Product] Delete Product';
 constructor(public payload: { id: number }) {}
 }
 
-// SetError: definir uma mensagem de erro
+// Define uma mensagem de erro
 export class SetError {
 static readonly type = '[Product] Set Error';
 constructor(public payload: { error: string | null }) {}

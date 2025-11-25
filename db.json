@@ -1,6 +1,20 @@
 {
   "products": [
-    { "id": 1, "name": "Caneca Azul" },
-    { "id": 2, "name": "Caderno A5" }
+    {
+      "id": 1,
+      "name": "Caneca Azul"
+    },
+    {
+      "id": 2,
+      "name": "Caderno A5"
+    },
+    {
+      "name": "Bic",
+      "id": 3
+    },
+    {
+      "name": "Apontador",
+      "id": 4
+    }
   ]
 }

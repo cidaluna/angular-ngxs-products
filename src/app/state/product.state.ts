@@ -1,6 +1,6 @@
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { Injectable } from '@angular/core';
-import { ProductStateModel, Product } from './product.model';
+import { IProductStateModel, IProduct } from './product.model';
 import { LoadProducts, AddProduct, DeleteProduct, SetError } from './product.actions';
 import { ProductService } from './product.service';
 import { tap, catchError } from 'rxjs/operators';
@@ -11,14 +11,14 @@ import { of } from 'rxjs';
 // Sempre tratamos erros com catchError para evitar streams quebradas.
 
 // Estado inicial
-const defaults: ProductStateModel = {
+const defaults: IProductStateModel = {
   products: [],
   loading: false,
   error: null
 };
 
 
-@State<ProductStateModel>({
+@State<IProductStateModel>({
   name: 'product',
   defaults
 })
@@ -28,31 +28,35 @@ export class ProductState {
 
   // SELECTOR — obter a lista de produtos
   @Selector()
-    static products(state: ProductStateModel) {
+  static products(state: IProductStateModel) {
+    console.log('[ProductState] Selector products chamado:', state.products);
     return state.products;
   }
 
 
   // SELECTOR — obter flag de loading
   @Selector()
-    static loading(state: ProductStateModel) {
+  static loading(state: IProductStateModel) {
+    console.log('[ProductState] Selector loading chamado:', state.loading);
     return state.loading;
   }
 
 
   // SELECTOR — obter mensagem de erro
   @Selector()
-    static error(state: ProductStateModel) {
+  static error(state: IProductStateModel) {
+    console.log('[ProductState] Selector error chamado:', state.error);
     return state.error;
   }
 
 
-  constructor(private productService: ProductService) {}
+  constructor(private readonly productService: ProductService) {}
 
 
   // ACTION — carrega produtos do servidor
   @Action(LoadProducts)
-    loadProducts(ctx: StateContext<ProductStateModel>) {
+  loadProducts(ctx: StateContext<IProductStateModel>) {
+    console.log('[ProductState] Action LoadProducts iniciada');
     // 1) setar loading true para a UI
     ctx.patchState({ loading: true, error: null });
 
@@ -60,69 +64,78 @@ export class ProductState {
     // 2) chamar o serviço que retorna Observable<Product[]>
     return this.productService.getAll()
       .pipe(
-      tap((products: Product[]) => {
-      // 3) quando chegar os dados, atualizamos o estado
-      ctx.patchState({ products, loading: false });
-      }),
-      catchError((err) => {
-      // 4) em caso de erro, atualizamos o estado com a mensagem
-      const message = err?.message || 'Erro ao carregar produtos';
-      ctx.patchState({ error: message, loading: false });
-      // retornamos um observable que completa para NGXS
-      return of([]);
-      })
-    );
-  }
+        tap((products: IProduct[]) => {
+          console.log('[ProductState] Produtos recebidos do serviço:', products);
+          // 3) quando chegar os dados, atualizamos o estado
+          //ctx.patchState({ products, loading: false });
+          // sempre setar um NOVO array (não mutar o anterior)
+          ctx.patchState({ products: Array.isArray(products) ? [...products] : [], loading: false });
+          console.log('[ProductState] Estado atualizado com produtos');
+        }),
+        catchError((err) => {
+          console.error('[ProductState] Erro ao carregar produtos:', err);
+          // 4) em caso de erro, atualizamos o estado com a mensagem
+          const message = err?.message || 'Erro ao carregar produtos';
+          ctx.patchState({ error: message, loading: false });
+          // retornamos um observable que completa para NGXS
+          return of([]);
+        })
+      );
+    }
 
 
   // ACTION — adicionar produto no servidor e atualizar estado local
   @Action(AddProduct)
-  addProduct(ctx: StateContext<ProductStateModel>, action: AddProduct) {
-  ctx.patchState({ loading: true, error: null });
-  const payload = action.payload;
+  addProduct(ctx: StateContext<IProductStateModel>, action: AddProduct) {
+    console.log('[ProductState] Action AddProduct iniciada com payload:', action.payload);
+    ctx.patchState({ loading: true, error: null });
 
-
-  return this.productService.add({ name: payload.name })
-  .pipe(
-  tap((created: Product) => {
-  // lemos o estado atual e adicionamos o produto criado
-  const state = ctx.getState();
-  ctx.patchState({ products: [...state.products, created], loading: false });
-  }),
-  catchError((err) => {
-  const message = err?.message || 'Erro ao adicionar produto';
-  ctx.patchState({ error: message, loading: false });
-  return of(null);
-  })
-  );
-  }
+    return this.productService.add({ name: action.payload.name })
+      .pipe(
+        tap((created: IProduct) => {
+          // lemos o estado atual e adicionamos o produto criado
+          const state = ctx.getState();
+          ctx.patchState({ products: [...state.products, created], loading: false });
+          console.log('[ProductState] Produto criado e adicionado:', created);
+        }),
+        catchError((err) => {
+          const message = err?.message || 'Erro ao adicionar produto';
+          ctx.patchState({ error: message, loading: false });
+          return of(null);
+        })
+      );
+    }
 
 
   // ACTION — deletar produto do servidor e atualizar estado
   @Action(DeleteProduct)
-  deleteProduct(ctx: StateContext<ProductStateModel>, action: DeleteProduct) {
-  ctx.patchState({ loading: true, error: null });
-  const id = action.payload.id;
+  deleteProduct(ctx: StateContext<IProductStateModel>, action: DeleteProduct) {
+  console.log('[ProductState] Action DeleteProduct iniciada com ID:', action.payload.id);
+    ctx.patchState({ loading: true, error: null });
+    const id = action.payload.id;
 
-
-  return this.productService.delete(id)
-  .pipe(
-  tap(() => {
-  const state = ctx.getState();
-  ctx.patchState({ products: state.products.filter(p => p.id !== id), loading: false });
-  }),
-  catchError((err) => {
-  const message = err?.message || 'Erro ao deletar produto';
-  ctx.patchState({ error: message, loading: false });
-  return of(null);
-  })
-  );
+    return this.productService.delete(id)
+      .pipe(
+        tap(() => {
+          console.log('[ProductState] Produto deletado com ID:', id);
+          const state = ctx.getState();
+          ctx.patchState({ products: state.products.filter(p => p.id !== id), loading: false });
+          console.log('[ProductState] Estado atualizado após deleção');
+        }),
+        catchError((err) => {
+          console.error('[ProductState] Erro ao deletar produto:', err);
+          const message = err?.message || 'Erro ao deletar produto';
+          ctx.patchState({ error: message, loading: false });
+          return of(null);
+        })
+      );
   }
 
 
   // ACTION simples para setar erros (pode ser usado pela UI)
   @Action(SetError)
-    setError(ctx: StateContext<ProductStateModel>, action: SetError) {
+  setError(ctx: StateContext<IProductStateModel>, action: SetError) {
+    console.log('[ProductState] Action SetError iniciada com:', action.payload.error);
     ctx.patchState({ error: action.payload.error });
   }
 }

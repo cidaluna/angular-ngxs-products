@@ -1,0 +1,21 @@
+<h2>Lista de Produtos</h2>
+
+<div *ngIf="(loading$ | async)" class="loading">
+  Carregando produtos...
+</div>
+
+<!-- sempre renderiza o child; passa primeiro o resultado do selector, senão o snapshot local -->
+<app-products-child
+  [products]="(products$ | async) ?? productsLocal ?? []"
+  (addProduct)="onAddProduct($event)"
+  (deleteProduct)="onDeleteProduct($event)"
+></app-products-child>
+
+<!-- debug: mostra ambos para comparação -->
+<!-- <div style="background: #f0f0f0; padding: 10px; margin-top:8px; font-size:12px;">
+  Produtos em debug (selector | snapshot): {{ (products$ | async) | json }} / {{ productsLocal | json }}
+</div> -->
+
+<div *ngIf="error$ | async as error" class="error">
+  Erro ao carregar produtos: {{ error }}
+</div>
