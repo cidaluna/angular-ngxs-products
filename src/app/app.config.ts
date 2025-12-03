@@ -2,10 +2,11 @@ import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { NgxsModule } from '@ngxs/store';
-import { ProductState } from './state/product.state';
+import { ProductState } from './state/product/product.state';
 import { importProvidersFrom } from '@angular/core';
 
 import { routes } from './app.routes';
+import { OfferState } from './state/offer/offer.state';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,6 +20,6 @@ export const appConfig: ApplicationConfig = {
     // provê o store do NGXS com o nosso estado ProductState
     // observe: provideStore aceita um array com states.
     // provideStore([ProductState])
-    importProvidersFrom(NgxsModule.forRoot([ProductState]))
+    importProvidersFrom(NgxsModule.forRoot([ProductState, OfferState]))
   ]
 };

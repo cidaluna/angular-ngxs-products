@@ -1,0 +1,41 @@
+import { CommonModule } from '@angular/common';
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-skeleton',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './skeleton.component.html',
+  styleUrl: './skeleton.component.scss'
+})
+export class SkeletonComponent {
+  @Input() type: 'circle' | 'square' | 'rectangle' = 'rectangle';
+
+  private _width?: string;
+  private _height?: string;
+
+  @Input() set width(value: string | undefined) {
+    this._width = this.validateSize(value);
+  }
+
+  @Input() set height(value: string | undefined) {
+    this._height = this.validateSize(value);
+  }
+
+  get sanitizedWidth() {
+    return this._width;
+  }
+
+  get sanitizedHeight() {
+    return this._height;
+  }
+
+  private validateSize(value?: string): string | undefined {
+    if (!value) return undefined;
+
+    // Regex para aceitar somente px, rem, em, vh, vw
+    const valid = /^(\d+(\.\d+)?)(px|rem|em|vh|vw)$/i;
+
+    return valid.test(value) ? value : undefined;
+  }
+}

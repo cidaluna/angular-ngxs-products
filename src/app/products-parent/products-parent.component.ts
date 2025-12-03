@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ProductsChildComponent } from '../products-child/products-child.component';
 import { CommonModule } from '@angular/common';
 import { Select, Store } from '@ngxs/store';
-import { ProductState } from '../state/product.state';
+import { ProductState } from '../state/product/product.state';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { IProduct } from '../state/product.model';
-import { LoadProducts, AddProduct, DeleteProduct } from '../state/product.actions';
+import { IProduct } from '../models/product.model';
+import { LoadProducts, AddProduct, DeleteProduct } from '../state/product/product.actions';
 
 @Component({
   selector: 'app-products-parent',

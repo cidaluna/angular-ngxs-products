@@ -1,0 +1,32 @@
+.skeleton {
+  display: block;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: linear-gradient(90deg, #e6e6e6 25%, #f2f2f2 50%, #e6e6e6 75%);
+  background-size: 200% 100%;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  max-width: 100%;
+  animation: pulse 1.5s infinite linear;
+
+  &.rectangle {
+    height: 12px;
+    width: 100%;
+  }
+
+  &.square {
+    height: 200px;
+    width: 100%;
+  }
+
+  &.circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+}
+
+@keyframes pulse {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}

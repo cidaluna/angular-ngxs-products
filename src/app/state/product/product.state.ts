@@ -1,6 +1,6 @@
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { Injectable } from '@angular/core';
-import { IProductStateModel, IProduct } from './product.model';
+import { IProductStateModel, IProduct } from '../../models/product.model';
 import { LoadProducts, AddProduct, DeleteProduct, SetError } from './product.actions';
 import { ProductService } from './product.service';
 import { tap, catchError } from 'rxjs/operators';

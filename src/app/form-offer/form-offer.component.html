@@ -1,0 +1,25 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <h2>Ofertas</h2>
+  <div>
+    <label for="title">Título:</label>
+    <input id="title" formControlName="title" />
+  </div>
+
+  <div>
+    <label for="description">Descrição:</label>
+    <textarea id="description" formControlName="description"></textarea>
+  </div>
+
+  <div>
+    <label for="price">Preço:</label>
+    <input id="price" type="number" formControlName="price" step="0.01"/>
+  </div>
+
+  <div>
+    <label>
+      <input type="checkbox" formControlName="active"> Ativa
+    </label>
+  </div>
+
+  <button type="submit" [disabled]="form.invalid">Criar Oferta</button>
+</form>

@@ -13,7 +13,32 @@
       "id": 3
     },
     {
-      "name": "Apontador",
+      "name": "Régua",
+      "id": 5
+    },
+    {
+      "name": "Estojo",
+      "id": 6
+    }
+  ],
+  "offers": [
+    {
+      "id": 1,
+      "name": "Offer Caneca Azul"
+    },
+    {
+      "id": 2,
+      "name": "Offer Caderno A5"
+    },
+    {
+      "name": "Offer Bic",
+      "id": 3
+    },
+    {
+      "title": "ADCSV",
+      "description": "offer canetas bic",
+      "price": 7800,
+      "active": false,
       "id": 4
     }
   ]
